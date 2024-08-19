@@ -38,9 +38,13 @@
     <input type="file" id="subtitleFile" accept=".srt"><br><br>
 
     <!-- 视频播放器 -->
-    <video id="videoPlayer" controls width="600" style="display:none;">
+    <video id="videoPlayer" controls width="100" playsinline webkit-playsinline>
         Your browser does not support the video tag.
     </video>
+    
+    <!-- <video id="videoPlayer" controls width="600" style="display:none;">
+        Your browser does not support the video tag.
+    </video> -->
 
     <!-- 字幕容器 -->
     <div id="subtitleContainer"></div>

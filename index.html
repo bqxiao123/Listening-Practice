@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrollable Subtitles with Video Sync</title>
+    <style>
+        #subtitleContainer {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #000;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            width: 600px;
+            height: 150px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            position: relative;
+        }
+
+        .subtitle-item {
+            padding: 5px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Upload Video and Subtitles</h1>
+
+    <!-- 上传视频的按钮 -->
+    <input type="file" id="videoFile" accept="video/*"><br><br>
+
+    <!-- 上传字幕文件的按钮 -->
+    <input type="file" id="subtitleFile" accept=".srt"><br><br>
+
+    <!-- 视频播放器 -->
+    <video id="videoPlayer" controls width="600" style="display:none;">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- 字幕容器 -->
+    <div id="subtitleContainer"></div>
+
+    <script>
+        const videoFileInput = document.getElementById('videoFile');
+        const subtitleFileInput = document.getElementById('subtitleFile');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const subtitleContainer = document.getElementById('subtitleContainer');
+        let subtitles = [];
+
+        // 解析SRT字幕的函数
+        function parseSRT(srt) {
+            const srtArray = srt.split("\r\n\r\n");
+            return srtArray.map(item => {
+                const parts = item.split("\n");
+                const time = parts[1].split(' --> ');
+                const start = timeToSeconds(time[0]);
+                const end = timeToSeconds(time[1]);
+                const text = parts.slice(2).join("<br>");
+                return { start, end, text };
+            });
+        }
+
+        // 将时间格式转换为秒
+        function timeToSeconds(time) {
+            const parts = time.split(":");
+            const seconds = parseFloat(parts[2].replace(",", "."));
+            return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + seconds;
+        }
+
+        // 显示字幕并允许滚动
+        function displaySubtitles() {
+            subtitleContainer.innerHTML = ''; // 清空之前的字幕
+            subtitles.forEach((sub, index) => {
+                const subtitleDiv = document.createElement('div');
+                subtitleDiv.classList.add('subtitle-item');
+                subtitleDiv.id = 'subtitle-' + index;
+                subtitleDiv.innerHTML = sub.text;
+                subtitleContainer.appendChild(subtitleDiv);
+            });
+        }
+
+        // 高亮当前字幕并滚动到相应位置
+        function highlightSubtitle(currentTime) {
+            subtitles.forEach((sub, index) => {
+                const subtitleDiv = document.getElementById('subtitle-' + index);
+                if (currentTime >= sub.start && currentTime <= sub.end) {
+                    subtitleDiv.classList.add('highlight');
+                    // 滚动到字幕
+                    subtitleDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    subtitleDiv.classList.remove('highlight');
+                }
+            });
+        }
+
+        // 当用户选择视频文件时触发
+        videoFileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                videoPlayer.src = fileURL;
+                videoPlayer.style.display = 'block';
+                videoPlayer.play();
+            }
+        });
+
+        // 当用户选择字幕文件时触发
+        subtitleFileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const srtContent = e.target.result;
+                    subtitles = parseSRT(srtContent);
+                    displaySubtitles(); // 显示字幕
+                    subtitleContainer.style.display = 'block';
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // 同步字幕和视频
+        videoPlayer.addEventListener('timeupdate', function() {
+            highlightSubtitle(videoPlayer.currentTime);
+        });
+    </script>
+</body>
+</html>

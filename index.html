@@ -117,7 +117,6 @@
         // 解析SRT字幕的函数
         function parseSRT(srt) {
                     const srtArray = srt.split("\r\n\r\n");
-                    console.log(srt)
             return srtArray.map(item => {
                 const parts = item.split("\n");
                 const time = parts[1].split(' --> ');
@@ -205,6 +204,7 @@
                     .then(response => response.text())  // 获取字幕文件内容
                     .then(srtContent => {
                         // 将 <br><br> 替换为 \r\n\r\n
+                        console.log("kkkkkk",srtContent)
                         const cleanedSrtContent = srtContent.replace(/<br><br>/g, '\r\n\r\n');
                         // console.log('Cleaned subtitle content:', cleanedSrtContent);  // 打印处理后的字幕内容
 

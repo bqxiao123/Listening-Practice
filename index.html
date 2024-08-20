@@ -116,7 +116,7 @@
 
         // 解析SRT字幕的函数
         function parseSRT(srt) {
-                    const srtArray = srt.split("\r\n\r\n");
+                    const srtArray = srt.split("\n\n");
             return srtArray.map(item => {
                 const parts = item.split("\n");
                 const time = parts[1].split(' --> ');
@@ -178,7 +178,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const srtContent = e.target.result;
-                    console.log("kkkkkk",JSON.stringify(srtContent))
+                    console.log("xxx",JSON.stringify(srtContent))
                     subtitles = parseSRT(srtContent);
                     displaySubtitles(); // 显示字幕
                     subtitleContainer.style.display = 'block';

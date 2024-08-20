@@ -45,22 +45,25 @@
     <h1>Upload or Select Video and Subtitles</h1>
 
     <div style="display: flex;">
-        <!-- 上传视频的按钮 -->
-        <input type="file" id="videoFile" accept="video/*" style="margin-right: 10px;">
+        <!-- 自定义按钮上传视频 -->
+        <button id="videoButton" style="margin-right: 10px;">上传视频文件</button>
+        <input type="file" id="videoFile" accept="video/*" style="display: none;">
         
-        <!-- 上传字幕文件的按钮 -->
-        <input type="file" id="subtitleFile" accept=".srt">
+        <!-- 自定义按钮上传字幕 -->
+        <button id="subtitleButton">上传字幕文件</button>
+        <input type="file" id="subtitleFile" accept=".srt" style="display: none;">
     </div>
+    
     
     <div style="display: flex; margin-top: 10px;">
         <!-- 下拉菜单选择视频文件 -->
         <select id="videoDropdown" style="margin-right: 10px;">
-            <option value="">Select Video File</option>
+            <option value="">选取视频</option>
         </select>
 
         <!-- 下拉菜单选择字幕文件 -->
         <select id="subtitleDropdown">
-            <option value="">Select Subtitle File</option>
+            <option value="">选取字幕</option>
         </select>
     </div>
 
@@ -73,8 +76,24 @@
     <div id="subtitleContainer"></div>
 
     <script>
-        const videoFileInput = document.getElementById('videoFile');
-        const subtitleFileInput = document.getElementById('subtitleFile');
+    // 获取按钮和文件输入框元素
+    const videoButton = document.getElementById('videoButton');
+    const videoFileInput = document.getElementById('videoFile');
+    
+    const subtitleButton = document.getElementById('subtitleButton');
+    const subtitleFileInput = document.getElementById('subtitleFile');
+    
+    // 点击自定义按钮时，触发文件选择对话框
+    videoButton.addEventListener('click', function() {
+        videoFileInput.click();  // 触发隐藏的文件选择框
+    });
+
+    subtitleButton.addEventListener('click', function() {
+        subtitleFileInput.click();  // 触发隐藏的文件选择框
+    });
+
+        // const videoFileInput = document.getElementById('videoFile');
+        // const subtitleFileInput = document.getElementById('subtitleFile');
         const videoPlayer = document.getElementById('videoPlayer');
         const subtitleContainer = document.getElementById('subtitleContainer');
         const videoDropdown = document.getElementById('videoDropdown');
@@ -167,7 +186,7 @@
                 const fileURL = URL.createObjectURL(file);
                 videoPlayer.src = fileURL;
                 videoPlayer.style.display = 'block';
-                videoPlayer.play();
+                // videoPlayer.play();
             }
         });
 

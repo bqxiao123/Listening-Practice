@@ -207,8 +207,7 @@
                         // 将 <br><br> 替换为 \r\n\r\n
                         console.log("kkkkkk",srtContent)
                         const cleanedSrtContent = srtContent.replace(/<br><br>/g, '\r\n\r\n');
-                        // console.log('Cleaned subtitle content:', cleanedSrtContent);  // 打印处理后的字幕内容
-                        console.log("hhhh",srtContent)
+                        console.log('Cleaned subtitle content:', cleanedSrtContent);  // 打印处理后的字幕内容
 
                         // 解析并渲染字幕
                         subtitles = parseSRT(cleanedSrtContent);

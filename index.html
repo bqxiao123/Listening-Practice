@@ -200,15 +200,24 @@
         subtitleDropdown.addEventListener('change', function() {
             const selectedSubtitle = subtitleDropdown.value;
             if (selectedSubtitle) {
-                fetch(`source/${selectedSubtitle}`)  // 假设字幕文件位于 source 文件夹
-                    .then(response => response.text())
+                fetch(`/source/${selectedSubtitle}`)
+                    .then(response => response.text())  // 获取字幕文件内容
                     .then(srtContent => {
-                        subtitles = parseSRT(srtContent);
+                        // 将 <br><br> 替换为 \r\n\r\n
+                        const cleanedSrtContent = srtContent.replace(/<br><br>/g, '\r\n\r\n');
+                        // console.log('Cleaned subtitle content:', cleanedSrtContent);  // 打印处理后的字幕内容
+
+                        // 解析并渲染字幕
+                        subtitles = parseSRT(cleanedSrtContent);
                         displaySubtitles();  // 显示字幕
                         subtitleContainer.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error loading subtitle content:', error);
                     });
             }
         });
+
 
         // 同步字幕和视频
         videoPlayer.addEventListener('timeupdate', function() {

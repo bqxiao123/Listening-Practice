@@ -123,7 +123,7 @@
                 const start = timeToSeconds(time[0]);
                 const end = timeToSeconds(time[1]);
                 const text = parts.slice(2).join("<br>");
-                console.log(text)
+                // console.log(text)
                 return { start, end, text };
             });
         }
@@ -179,7 +179,6 @@
                 reader.onload = function(e) {
                     const srtContent1 = e.target.result;
                     const srtContent = srtContent1.replace(/\r\n\r\n/g, '\n\n');
-                    console.log("xxx",JSON.stringify(srtContent))
                     subtitles = parseSRT(srtContent);
                     displaySubtitles(); // 显示字幕
                     subtitleContainer.style.display = 'block';
@@ -206,10 +205,9 @@
                     .then(response => response.text())  // 获取字幕文件内容
                     .then(srtContent => {
                         // 将 <br><br> 替换为 \r\n\r\n
-                        console.log("kkkkkk",srtContent)
-                        const cleanedSrtContent = srtContent.replace(/<br><br>/g, '\r\n\r\n');
-                        console.log('Cleaned subtitle content:', cleanedSrtContent);  // 打印处理后的字幕内容
-                        console.log("Cleaned subtitle content1:", JSON.stringify(cleanedSrtContent));
+                        const cleanedSrtContent = srtContent.replace(/<br><br>/g, '\n\n');
+                        // console.log('Cleaned subtitle content:', cleanedSrtContent);  // 打印处理后的字幕内容
+                        // console.log("Cleaned subtitle content1:", JSON.stringify(cleanedSrtContent));
 
 
                         // 解析并渲染字幕

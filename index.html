@@ -14,8 +14,13 @@
         }
 
         #videoPlayer {
-            width: 100%;
+            width: 50%;
             height: auto;
+        }
+        @media (max-width: 768px) { /* 针对手机及小屏设备 */
+            #videoPlayer {
+                width: 100%; /* 在手机端宽度设置为 100% */
+            }
         }
 
         #subtitleContainer {
@@ -27,6 +32,11 @@
             border: 1px solid #ccc;
             box-sizing: border-box; /* 确保内边距和边框不会影响总宽度 */
             flex-grow: 1; /* 占用剩余的高度 */
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
         }
     </style>
 </head>

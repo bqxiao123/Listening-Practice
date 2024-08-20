@@ -193,8 +193,13 @@
             if (selectedVideo) {
                 videoPlayer.src = `source/${selectedVideo}`;  // 假设视频文件位于 source 文件夹
                 videoPlayer.style.display = 'block';
-                videoPlayer.play();
+                // videoPlayer.play();
             }
+        });
+
+        // 让用户手动点击播放按钮，而不是自动播放
+        videoPlayer.addEventListener('canplay', function() {
+            // 等用户点击播放按钮再播放视频
         });
 
         // 下拉菜单选择字幕文件

@@ -8,14 +8,15 @@
         #subtitleContainer {
             margin-top: 20px;
             font-size: 18px;
-            color: #000;
-            background-color: rgba(255, 255, 255, 0.8);
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
-            width: 600px;
-            height: 150px;
-            overflow-y: scroll;
+            width: 100%;
+            max-width: 100%;
+            height: 150px; /* 固定高度 */
+            overflow-y: scroll; /* 启用垂直滚动 */
             border: 1px solid #ccc;
-            position: relative;
+            box-sizing: border-box; /* 确保内边距和边框不会影响总宽度 */
         }
 
         .subtitle-item {
@@ -47,7 +48,7 @@
     </video> -->
 
     <!-- 字幕容器 -->
-    <div id="subtitleContainer" style="width: 100%; height: auto;"></div>
+    <div id="subtitleContainer">
 
     <script>
         const videoFileInput = document.getElementById('videoFile');

@@ -10,16 +10,17 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh; /* 使页面高度为视口高度 */
+            height: 100vh;
         }
 
         #videoPlayer {
             width: 50%;
             height: auto;
         }
-        @media (max-width: 768px) { /* 针对手机及小屏设备 */
+
+        @media (max-width: 768px) {
             #videoPlayer {
-                width: 100%; /* 在手机端宽度设置为 100% */
+                width: 100%;
             }
         }
 
@@ -28,10 +29,10 @@
             color: #fff;
             background-color: rgba(0, 0, 0, 0.7);
             padding: 10px;
-            overflow-y: auto; /* 启用垂直滚动 */
+            overflow-y: auto;
             border: 1px solid #ccc;
-            box-sizing: border-box; /* 确保内边距和边框不会影响总宽度 */
-            flex-grow: 1; /* 占用剩余的高度 */
+            box-sizing: border-box;
+            flex-grow: 1;
         }
 
         .highlight {
@@ -41,33 +42,77 @@
     </style>
 </head>
 <body>
-    <h1>Upload Video and Subtitles</h1>
+    <h1>Upload or Select Video and Subtitles</h1>
 
-    <!-- 上传视频的按钮 -->
-    <input type="file" id="videoFile" accept="video/*"><br><br>
+    <div style="display: flex;">
+        <!-- 上传视频的按钮 -->
+        <input type="file" id="videoFile" accept="video/*" style="margin-right: 10px;">
+        
+        <!-- 上传字幕文件的按钮 -->
+        <input type="file" id="subtitleFile" accept=".srt">
+    </div>
+    
+    <div style="display: flex; margin-top: 10px;">
+        <!-- 下拉菜单选择视频文件 -->
+        <select id="videoDropdown" style="margin-right: 10px;">
+            <option value="">Select Video File</option>
+        </select>
 
-    <!-- 上传字幕文件的按钮 -->
-    <input type="file" id="subtitleFile" accept=".srt"><br><br>
+        <!-- 下拉菜单选择字幕文件 -->
+        <select id="subtitleDropdown">
+            <option value="">Select Subtitle File</option>
+        </select>
+    </div>
 
-    <!-- 视频播放器 --> 
+    <!-- 视频播放器 -->
     <video id="videoPlayer" controls playsinline webkit-playsinline>
-    <!-- <video id="videoPlayer" controls playsinline webkit-playsinline style="width: 100%; height: auto;"> -->
         Your browser does not support the video tag.
     </video>
-    
-    <!-- <video id="videoPlayer" controls width="600" style="display:none;">
-        Your browser does not support the video tag.
-    </video> -->
 
     <!-- 字幕容器 -->
-    <div id="subtitleContainer">
+    <div id="subtitleContainer"></div>
 
     <script>
         const videoFileInput = document.getElementById('videoFile');
         const subtitleFileInput = document.getElementById('subtitleFile');
         const videoPlayer = document.getElementById('videoPlayer');
         const subtitleContainer = document.getElementById('subtitleContainer');
+        const videoDropdown = document.getElementById('videoDropdown');
+        const subtitleDropdown = document.getElementById('subtitleDropdown');
         let subtitles = [];
+
+        // 动态加载视频文件和字幕文件到下拉菜单中
+        function loadFiles() {
+            fetch('/api/videos')
+                .then(response => response.json())
+                .then(files => {
+                    console.log('Loaded video files:', files);  // 打印文件列表
+                    files.forEach(video => {
+                        const option = document.createElement('option');
+                        option.value = video;
+                        option.text = video;
+                        videoDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading video files:', error);
+                });
+
+            fetch('/api/subtitles')
+                .then(response => response.json())
+                .then(files => {
+                    console.log('Loaded subtitle files:', files);  // 打印文件列表
+                    files.forEach(subtitle => {
+                        const option = document.createElement('option');
+                        option.value = subtitle;
+                        option.text = subtitle;
+                        subtitleDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading subtitle files:', error);
+                });
+        }
 
         // 解析SRT字幕的函数
         function parseSRT(srt) {
@@ -107,7 +152,6 @@
                 const subtitleDiv = document.getElementById('subtitle-' + index);
                 if (currentTime >= sub.start && currentTime <= sub.end) {
                     subtitleDiv.classList.add('highlight');
-                    // 滚动到字幕
                     subtitleDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } else {
                     subtitleDiv.classList.remove('highlight');
@@ -141,10 +185,37 @@
             }
         });
 
+        // 下拉菜单选择视频文件
+        videoDropdown.addEventListener('change', function() {
+            const selectedVideo = videoDropdown.value;
+            if (selectedVideo) {
+                videoPlayer.src = `source/${selectedVideo}`;  // 假设视频文件位于 source 文件夹
+                videoPlayer.style.display = 'block';
+                videoPlayer.play();
+            }
+        });
+
+        // 下拉菜单选择字幕文件
+        subtitleDropdown.addEventListener('change', function() {
+            const selectedSubtitle = subtitleDropdown.value;
+            if (selectedSubtitle) {
+                fetch(`source/${selectedSubtitle}`)  // 假设字幕文件位于 source 文件夹
+                    .then(response => response.text())
+                    .then(srtContent => {
+                        subtitles = parseSRT(srtContent);
+                        displaySubtitles();  // 显示字幕
+                        subtitleContainer.style.display = 'block';
+                    });
+            }
+        });
+
         // 同步字幕和视频
         videoPlayer.addEventListener('timeupdate', function() {
             highlightSubtitle(videoPlayer.currentTime);
         });
+
+        // 页面加载时自动加载视频和字幕文件列表
+        loadFiles();
     </script>
 </body>
 </html>

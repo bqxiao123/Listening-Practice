@@ -178,7 +178,7 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const srtContent = e.target.result;
-                    console.log("kkkkkk",srtContent)
+                    console.log("kkkkkk",JSON.stringify(srtContent))
                     subtitles = parseSRT(srtContent);
                     displaySubtitles(); // 显示字幕
                     subtitleContainer.style.display = 'block';

@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+// const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 // 提供静态文件
 app.use(express.static('src'));      // 提供 src 文件夹中的静态文件 (JS, CSS)
@@ -35,6 +36,9 @@ app.get('/api/subtitles', (req, res) => {
 });
 
 // 启动服务器
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+// app.listen(port, () => {
+//     console.log(`Server is running on http://localhost:${port}`);
+// });
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

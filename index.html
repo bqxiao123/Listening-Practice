@@ -134,6 +134,7 @@
         const videoDropdown = document.getElementById('videoDropdown');
         const subtitleDropdown = document.getElementById('subtitleDropdown');
         let subtitles = [];
+        let loopHandler; // 用于保存当前的循环播放处理函数
 
         // 动态加载视频文件和字幕文件到下拉菜单中
         function loadFiles() {
@@ -177,7 +178,6 @@
                 const start = timeToSeconds(time[0]);
                 const end = timeToSeconds(time[1]);
                 const text = parts.slice(2).join("<br>");
-                console.log(text);
                 return { start, end, text };
             });
         }
@@ -198,6 +198,41 @@
                 subtitleDiv.id = 'subtitle-' + index;
                 subtitleDiv.innerHTML = sub.text;
                 subtitleContainer.appendChild(subtitleDiv);
+
+                // 修改：添加点击事件
+                subtitleDiv.addEventListener('click', function() {
+                    // 移除之前的循环播放事件监听器（如果有）
+                    if (loopHandler) {
+                        videoPlayer.removeEventListener('timeupdate', loopHandler);
+                    }
+
+                    // 当点击字幕时，设置视频的播放区间
+                    videoPlayer.currentTime = sub.start;
+
+                    // 添加循环播放功能
+                    loopHandler = () => {
+                        if (videoPlayer.currentTime >= sub.end) {
+                            videoPlayer.currentTime = sub.start;
+                        }
+                    };
+
+                    // 为视频添加新的 timeupdate 监听器
+                    videoPlayer.addEventListener('timeupdate', loopHandler);
+
+                    // 修改：添加一个按钮用于停止循环播放
+                    const stopLoopingButton = document.createElement('button');
+                    stopLoopingButton.textContent = '停止重复播放';
+                    document.body.appendChild(stopLoopingButton);
+
+                    stopLoopingButton.addEventListener('click', function() {
+                        // 移除循环播放的监听器
+                        videoPlayer.removeEventListener('timeupdate', loopHandler);
+                        loopHandler = null;
+
+                        // 移除按钮本身
+                        stopLoopingButton.remove();
+                    });
+                });
             });
         }
 

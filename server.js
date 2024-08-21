@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
+// const port = 3000;
 const PORT = process.env.PORT || 3000;
 
 // 提供静态文件
@@ -34,34 +35,10 @@ app.get('/api/subtitles', (req, res) => {
     });
 });
 
-// 新增路由：提供视频文件的路由，并确保正确的 MIME 类型
-app.get('/video/:filename', (req, res) => {
-    const videoPath = path.join(__dirname, 'source', req.params.filename);
-
-    // 检查文件是否存在
-    if (fs.existsSync(videoPath)) {
-        // 设置正确的 MIME 类型
-        res.setHeader('Content-Type', 'video/mp4');
-        res.sendFile(videoPath);
-    } else {
-        res.status(404).send('Video not found');
-    }
-});
-
-// 新增路由：提供字幕文件的路由
-app.get('/subtitle/:filename', (req, res) => {
-    const subtitlePath = path.join(__dirname, 'source', req.params.filename);
-
-    // 检查文件是否存在
-    if (fs.existsSync(subtitlePath)) {
-        res.setHeader('Content-Type', 'application/x-subrip');  // 设置 SRT 的 MIME 类型
-        res.sendFile(subtitlePath);
-    } else {
-        res.status(404).send('Subtitle not found');
-    }
-});
-
 // 启动服务器
+// app.listen(port, () => {
+//     console.log(`Server is running on http://localhost:${port}`);
+// });
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

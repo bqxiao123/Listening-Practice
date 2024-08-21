@@ -7,6 +7,7 @@
     <style>
         /* 容器样式 */
         .container {
+            width:50%;
             display: flex;
             justify-content: space-around; /* 元素水平分布 */
             align-items: center; /* 垂直居中 */
@@ -54,10 +55,11 @@
         }
 
         #subtitleContainer {
+            width:50%;
             font-size: 18px;
             color: #fff;
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 10px;
+            padding: 1px;
             overflow-y: auto;
             border: 1px solid #ccc;
             box-sizing: border-box;
@@ -71,7 +73,7 @@
     </style>
 </head>
 <body>
-    <h1>Listen Practice</h1>
+    <h1> Listen Practice  </h1>
 
     <!-- 学习列表、选取视频、选取字幕行 -->
     <div class="container">
@@ -104,12 +106,12 @@
     </div>
 
     <!-- 视频播放器 -->
-    <video id="videoPlayer" controls playsinline webkit-playsinline style="margin: 20px auto; display: block;">
+    <video id="videoPlayer" controls playsinline webkit-playsinline style="margin: 5px auto; display: block;">
         Your browser does not support the video tag.
     </video>
 
     <!-- 字幕容器 -->
-    <div id="subtitleContainer" class="container" style="height: 200px;"></div>
+    <div id="subtitleContainer" class="container" style="margin: 5px auto; display: block;"></div>
 
     <script>
         // 获取按钮和文件输入框元素

@@ -11,19 +11,19 @@
             justify-content: space-around; /* 元素水平分布 */
             align-items: center; /* 垂直居中 */
             border: 2px solid #000;
-            padding: 20px;
-            height: 1%; /* 设置容器的高度为视口高度的50% */
-            width: 80%;
-            margin: 5px auto;
+            padding: 10px;
+            height: 0.3%; /* 设置容器的高度为视口高度的50% */
+            width: 90%;
+            margin: 2px auto;
         }
 
         .upload-text {
             text-align: center;
-            font-size: 16px;
+            font-size: 10px;
         }
 
         .button {
-            padding: 10px 20px;
+            padding: 1px 1px;
             border: 1px solid #000;
             background-color: #fff;
             cursor: pointer;
@@ -76,15 +76,15 @@
     <!-- 学习列表、选取视频、选取字幕行 -->
     <div class="container">
         <!-- 学习列表的标签 -->
-        <div class="upload-text">学习列表</div>
+        <div class="upload-text" style="padding: 1px; width: 100px">学习列表</div>
 
         <!-- 下拉菜单选择视频文件 -->
-        <select id="videoDropdown" style="padding: 10px; width: 150px;">
+        <select id="videoDropdown" style="padding: 1px; width: 100px;">
             <option value="">选取视频</option>
         </select>
 
         <!-- 下拉菜单选择字幕文件 -->
-        <select id="subtitleDropdown" style="padding: 10px; width: 150px;">
+        <select id="subtitleDropdown" style="padding: 1px; width: 100px;">
             <option value="">选取字幕</option>
         </select>
     </div>
@@ -92,14 +92,14 @@
     <!-- 上传文件、上传视频、上传字幕行 -->
     <div class="container">
         <!-- 上传文件的标签 -->
-        <div class="upload-text">上传文件</div>
+        <div class="upload-text" style="padding: 1px; width: 100px">上传文件</div>
 
         <!-- 自定义按钮上传视频 -->
-        <button id="videoButton" class="button">上传视频</button>
+        <button id="videoButton" class="button" style="padding: 1px; width: 100px">上传视频</button>
         <input type="file" id="videoFile" accept="video/*" style="display: none;">
         
         <!-- 自定义按钮上传字幕 -->
-        <button id="subtitleButton" class="button">上传字幕</button>
+        <button id="subtitleButton" class="button" style="padding: 1px; width: 100px">上传字幕</button>
         <input type="file" id="subtitleFile" accept=".srt" style="display: none;">
     </div>
 

@@ -150,6 +150,7 @@
     <div id="subtitleContainer" class="container" style="margin: 2px auto; display: block;"></div>
 
     <script>
+        let stopLoopingButtonExists = false;
         // 获取按钮和文件输入框元素
         const videoButton = document.getElementById('videoButton');
         const videoFileInput = document.getElementById('videoFile');
@@ -229,50 +230,77 @@
 
         // 显示字幕并允许滚动
         function displaySubtitles() {
-            subtitleContainer.innerHTML = ''; // 清空之前的字幕
-            subtitles.forEach((sub, index) => {
-                const subtitleDiv = document.createElement('div');
-                subtitleDiv.classList.add('subtitle-item');
-                subtitleDiv.id = 'subtitle-' + index;
-                subtitleDiv.innerHTML = sub.text;
-                subtitleContainer.appendChild(subtitleDiv);
+    subtitleContainer.innerHTML = ''; // 清空之前的字幕
+    subtitles.forEach((sub, index) => {
+        const subtitleDiv = document.createElement('div');
+        subtitleDiv.classList.add('subtitle-item');
+        subtitleDiv.id = 'subtitle-' + index;
+        subtitleDiv.innerHTML = sub.text;
+        subtitleContainer.appendChild(subtitleDiv);
 
-                // 修改：添加点击事件
-                subtitleDiv.addEventListener('click', function() {
-                    // 移除之前的循环播放事件监听器（如果有）
-                    if (loopHandler) {
-                        videoPlayer.removeEventListener('timeupdate', loopHandler);
-                    }
+        // 修改：添加点击事件
+        subtitleDiv.addEventListener('click', function() {
+            // 移除之前的循环播放事件监听器（如果有）
+            if (loopHandler) {
+                videoPlayer.removeEventListener('timeupdate', loopHandler);
+            }
 
-                    // 当点击字幕时，设置视频的播放区间
+            // 当点击字幕时，设置视频的播放区间
+            videoPlayer.currentTime = sub.start;
+
+            // 添加循环播放功能
+            loopHandler = () => {
+                if (videoPlayer.currentTime >= sub.end) {
                     videoPlayer.currentTime = sub.start;
+                }
+            };
 
-                    // 添加循环播放功能
-                    loopHandler = () => {
-                        if (videoPlayer.currentTime >= sub.end) {
-                            videoPlayer.currentTime = sub.start;
-                        }
-                    };
+            // 为视频添加新的 timeupdate 监听器
+            videoPlayer.addEventListener('timeupdate', loopHandler);
 
-                    // 为视频添加新的 timeupdate 监听器
-                    videoPlayer.addEventListener('timeupdate', loopHandler);
+            // 检查是否已经存在“停止重复播放”按钮
+            if (!stopLoopingButtonExists) {
+                // 创建“停止重复播放”按钮
+                const stopLoopingButton = document.createElement('button');
+                stopLoopingButton.textContent = '停止重复播放';
+                
+                // 样式设置，覆盖在屏幕的底部，始终固定
+                stopLoopingButton.style.position = 'fixed';
+                stopLoopingButton.style.bottom = '0';
+                stopLoopingButton.style.left = subtitleContainer.getBoundingClientRect().left + 'px'; // 对齐字幕容器
+                stopLoopingButton.style.width = subtitleContainer.offsetWidth + 'px'; // 与字幕容器等宽
+                stopLoopingButton.style.zIndex = '10'; // 确保按钮显示在前面
 
-                    // 修改：添加一个按钮用于停止循环播放
-                    const stopLoopingButton = document.createElement('button');
-                    stopLoopingButton.textContent = '停止重复播放';
-                    document.body.appendChild(stopLoopingButton);
+                // 将按钮添加到 body 中
+                document.body.appendChild(stopLoopingButton);
 
-                    stopLoopingButton.addEventListener('click', function() {
-                        // 移除循环播放的监听器
-                        videoPlayer.removeEventListener('timeupdate', loopHandler);
-                        loopHandler = null;
+                // 设置标志，表示按钮已经存在
+                stopLoopingButtonExists = true;
 
-                        // 移除按钮本身
-                        stopLoopingButton.remove();
-                    });
+                stopLoopingButton.addEventListener('click', function() {
+                    // 移除循环播放的监听器
+                    videoPlayer.removeEventListener('timeupdate', loopHandler);
+                    loopHandler = null;
+
+                    // 移除按钮本身
+                    stopLoopingButton.remove();
+
+                    // 恢复标志
+                    stopLoopingButtonExists = false;
                 });
-            });
-        }
+
+                // 当窗口大小改变时，更新按钮位置和宽度
+                window.addEventListener('resize', function() {
+                    stopLoopingButton.style.left = subtitleContainer.getBoundingClientRect().left + 'px';
+                    stopLoopingButton.style.width = subtitleContainer.offsetWidth + 'px';
+                });
+            }
+        });
+    });
+}
+
+
+
 
         // 高亮当前字幕并滚动到相应位置
         function highlightSubtitle(currentTime) {
